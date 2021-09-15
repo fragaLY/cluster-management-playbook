@@ -1,0 +1,17 @@
+---
+- name: deploy RKE2
+  hosts: all
+  become: yes
+  vars:
+    rke2_server_taint: true
+    rke2_token: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      198270172010910210820810820918
+    rke2_custom_registry: true
+    rke2_custom_host: artifactory.company.com:6262
+    rke2_custom_login: auto_company-robot
+    rke2_custom_passoword: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      19271797219817298712987918279
+  roles:
+    - role: ansible-role-rke2-rhel

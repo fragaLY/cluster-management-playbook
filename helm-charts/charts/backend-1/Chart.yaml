@@ -1,0 +1,17 @@
+apiVersion: v2
+name: prjp-service
+version: 1.0.8
+description: A Helm chart for prjP  service
+type: application
+home: https://kb.company.com/display/cmpn/prj+Platform
+sources:
+  - https://git.company.com/cmpn-/prj-platform/helm-charts
+maintainers:
+  - name: company DevOps team
+    email: Projectcmpn-@company.com
+icon: file://icon.png
+dependencies:
+  - name: common
+    version: 1.5.5
+    repository: "@cmpn-"
+appVersion: "1.0"

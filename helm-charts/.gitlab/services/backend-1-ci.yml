@@ -1,0 +1,59 @@
+test:backend-1:
+  stage: test
+  needs:
+    - deploy:common
+  only:
+    changes:
+      - charts/backend-1/*
+      - charts/backend-1/**/*
+  script:
+    - scripts/helm-test.sh
+  variables:
+    HELM_CHART: charts/backend-1
+
+deploy:backend-1:
+  stage: deploy
+  needs:
+    - test:backend-1
+  only:
+    refs:
+      - master
+    changes:
+      - library/common/*
+      - library/common/**/*
+      - charts/service/*
+      - charts/service/**/*
+  script:
+    - scripts/helm-build-upload.sh
+  variables:
+    HELM_CHART: charts/backend-1
+
+test:back-end-actuator:
+  stage: test
+  needs:
+    - deploy:common
+  only:
+    changes:
+      - charts/backend-1-actuator/*
+      - charts/backend-1-actuator/**/*
+  script:
+    - scripts/helm-test.sh
+  variables:
+    HELM_CHART: charts/backend-1-actuator
+
+deploy:backend-1-actuator:
+  stage: deploy
+  needs:
+    - test:backend-1-actuator
+  only:
+    refs:
+      - master
+    changes:
+      - library/common/*
+      - library/common/**/*
+      - charts/backend-1-actuator/*
+      - charts/backend-1-actuator/**/*
+  script:
+    - scripts/helm-build-upload.sh
+  variables:
+    HELM_CHART: charts/backend-1-actuator

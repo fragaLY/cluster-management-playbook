@@ -1,0 +1,31 @@
+---
+{{- define "common.deployment.tpl" -}}
+apiVersion: apps/v1
+kind: Deployment
+{{ template "common.metadata.deployment" . }}
+spec:
+  {{- $replicas := default "1" .Values.replicas }}
+  replicas: {{ $replicas }}
+  selector:
+    matchLabels: {{- include "common.labels.selector" . | nindent 6 }}
+  strategy: {{- include "common.deployment.strategy.rollingUpdate" . | nindent 4 }}
+  template:
+    metadata:
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+      annotations: {{- include "common.annotations.deployment" . | nindent 8 }}
+    spec:
+      {{- include "common.affinity" . | nindent 6 }}
+      {{- include "common.tolerations" . | nindent 6 }}
+      {{- include "common.security.context" . | nindent 6 }}
+      {{- $pullSecrets := default (tuple "artifactory--docker-virtual") .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      containers:
+      -
+{{ include "common.container.tpl" . | indent 8 }}
+{{- end -}}
+{{- define "common.deployment" -}}
+{{- template "common.util.merge" (append . "common.deployment.tpl") -}}
+{{- end -}}

@@ -1,0 +1,23 @@
+---
+- name: install RKE2 files
+  include_tasks: rke2-install.yml
+
+- name: lookup active server
+  include_tasks: lookup-active-server.yml
+  when:
+    - groups.control_plane | length | int >= 2
+
+- name: configure very first server instance
+  include_tasks: first-instance.yml
+  when:
+    - inventory_hostname == groups.control_plane.0
+    - active_server is not defined
+
+- name: configure rest instances of rke2 cluster
+  include_tasks: rest-instances.yml
+  when:
+    - active_server is defined
+    - groups.k8s_cluster | length | int >= 2
+
+# - name: final steps
+#   include_tasks: fatality.yml

@@ -1,0 +1,26 @@
+---
+- name: add RKE2 repo
+  ansible.builtin.template:
+    src: templates/rancher.repo.j2
+    dest: /etc/yum.repos.d/rancher.repo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: update dnf/yum cache
+  ansible.builtin.yum:
+    name: '*'
+    state: latest
+    update_cache: true
+
+- name: install RKE2 server
+  ansible.builtin.package:
+    name: rke2-server
+  when: "'control_plane' in group_names"
+
+- name: install RKE2 agent
+  ansible.builtin.package:
+    name:
+      - rke2-agent
+      - iscsi-initiator-utils
+  when: "'workers' in group_names"

@@ -1,0 +1,7 @@
+.*
+!.helmignore
+!.gitignore
+helm-charts/charts/demo-common-lib/charts
+!.gitlab
+!.gitlab-ci.yml
+Chart.lock

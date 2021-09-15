@@ -1,0 +1,8 @@
+---
+{{- define "common.security.context" -}}
+{{- $context := default (dict) .Values.securityContext -}}
+securityContext:
+  runAsUser: {{ default "1001" $context.runAsUser }}
+  fsGroup: {{ default "1001" $context.fsGroup }}
+  runAsNonRoot: {{ default "true" $context.runAsNonRoot }}
+{{- end -}}

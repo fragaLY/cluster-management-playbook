@@ -1,0 +1,29 @@
+test:frontend:
+  stage: test
+  needs:
+    - deploy:common
+  only:
+    changes:
+      - charts/frontend/*
+      - charts/frontend/**/*
+  script:
+    - scripts/helm-test.sh
+  variables:
+    HELM_CHART: charts/frontend
+
+deploy:frontend:
+  stage: deploy
+  needs:
+    - test:frontend
+  only:
+    refs:
+      - master
+    changes:
+      - library/common/*
+      - library/common/**/*
+      - charts/frontend/*
+      - charts/frontend/**/*
+  script:
+    - scripts/helm-build-upload.sh
+  variables:
+    HELM_CHART: charts/frontend

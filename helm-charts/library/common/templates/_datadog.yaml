@@ -1,0 +1,30 @@
+---
+{{- define "common.datadog" }}
+{{- $datadog := default (dict) .Values.datadog -}}
+- name: DD_SERVICE_NAME
+  value: {{ template "common.fullname" . }}
+- name: DD_ENV
+  value: {{ default "dev" $datadog.environment }}
+- name: DD_VERSION
+  value: {{ .Values.image.tag }}
+- name: DD_LOGS_INJECTION
+  value: {{ default "true" $datadog.logInjection | quote }}
+- name: DD_PROFILING_ENABLED
+  value: {{ default "true" $datadog.profilingEnabled | quote }}
+- name: DD_TRACE_ANALYTICS_ENABLED
+  value: {{ default "true" $datadog.analyticsEnabled | quote }}
+- name: DD_PROFILING_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ default "datadog-secret" $datadog.secretNameRef }}
+      key: {{ default "api-key" $datadog.profilingKey }}
+- name: DD_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ default "datadog-secret" $datadog.secretNameRef }}
+      key: {{ default "api-key" $datadog.apiKey }}
+- name: DD_AGENT_HOST
+  valueFrom:
+    fieldRef:
+      fieldPath: status.hostIP
+{{- end -}}

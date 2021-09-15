@@ -1,0 +1,9 @@
+---
+{{- template "common.configmap.spring" (list . "application.configmap") -}}
+{{- define "application.configmap" -}}
+data:
+  SPRING_DATASOURCE_URL: {{ .Values.application.datasource.url | quote }}
+  SPRING_DATASOURCE_USERNAME: {{ .Values.application.datasource.username | quote }}
+  SPRING_DATASOURCE_PASSWORD: {{ .Values.application.datasource.password | quote }}
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: {{ .Values.application.kafka.bootstrapServers | quote }}
+{{- end -}}

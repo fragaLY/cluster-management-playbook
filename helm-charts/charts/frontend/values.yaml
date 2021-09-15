@@ -1,0 +1,14 @@
+---
+fullnameOverride: front-end
+
+image:
+  name: frontend
+  tag: latest
+
+resources:
+  requests:
+    memory: 128Mi
+    cpu: 500m
+  limits:
+    memory: 256Mi
+    cpu: 500m

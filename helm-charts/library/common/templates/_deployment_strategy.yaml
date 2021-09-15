@@ -1,0 +1,9 @@
+{{- define "common.deployment.strategy.rollingUpdate" -}}
+type: RollingUpdate
+rollingUpdate:
+  maxSurge: 1
+  maxUnavailable: 1
+{{- end -}}
+
+{{- define "common.deployment.strategy.recreate" -}}
+{{- end -}}

@@ -1,0 +1,27 @@
+---
+- name: create RKE2 config dir
+  ansible.builtin.file:
+    state: directory
+    path: /etc/rancher/rke2
+    owner: root
+    group: root
+    mode: 0755
+
+- name: update RKE2 configuration
+  ansible.builtin.template:
+    src: templates/config.yaml.j2
+    dest: /etc/rancher/rke2/config.yaml
+    owner: root
+    group: root
+    mode: 0644
+  notify: "restart rke2"
+
+- name: update custom registry setting
+  ansible.builtin.template:
+    src: templates/registries.yaml.j2
+    dest: /etc/rancher/rke2/registries.yaml
+    owner: root
+    group: root
+    mode: 0644
+  notify: "restart rke2"
+  when: rke2_custom_registry is true

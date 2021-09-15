@@ -1,0 +1,6 @@
+{{- define "common.tolerations"}}
+{{- if .Values.affinity -}}
+tolerations:
+  {{- .Values.tolerations | toYaml | trim | nindent 6 }}
+{{- end -}}
+{{- end -}}

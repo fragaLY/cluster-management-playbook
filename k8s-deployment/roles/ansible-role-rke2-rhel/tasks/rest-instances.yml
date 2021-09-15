@@ -1,0 +1,32 @@
+---
+- name: configure RKE2
+  include_tasks: rke2-config.yml
+
+- name: start rke2-server
+  ansible.builtin.systemd:
+    name: rke2-server.service
+    state: started
+    enabled: true
+  when: "'control_plane' in group_names"
+
+- name: start rke2-agent
+  ansible.builtin.systemd:
+    name: rke2-agent.service
+    state: started
+    enabled: true
+  when: "'workers' in group_names"
+
+- name: Wait for remaining nodes to be ready
+  shell: |
+    set -o pipefail
+    /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep " Ready" | wc -l
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: all_ready_nodes
+  until:
+    - groups.k8s_cluster | length == all_ready_nodes.stdout | int
+  retries: 100
+  delay: 15
+  delegate_to: "{{ active_server | default(groups.control_plane.0) }}"
+  run_once: true

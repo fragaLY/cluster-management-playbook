@@ -1,0 +1,4 @@
+---
+{{- template "common.configmap" (list . "application.configmap") -}}
+{{- define "application.configmap" -}}
+{{- end -}}

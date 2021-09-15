@@ -1,0 +1,43 @@
+{{- /*
+The kubelet uses liveness probes to know when to restart a container.
+*/ -}}
+{{- define "common.healthcheck.liveness" -}}
+{{- $healthCheck := .Values.healthCheck -}}
+{{- $liveness := $healthCheck.liveness -}}
+{{- $config := default (dict) .Values.config -}}
+livenessProbe:
+  httpGet:
+    path: {{ default "" $config.contextPath}}/{{ default "actuator/health/liveness" $liveness.path }}
+    port: {{ default "8080" $liveness.port }}
+  initialDelaySeconds: {{ default "180" $liveness.initialDelaySeconds }}
+  timeoutSeconds: {{ default "2" $liveness.timeoutSeconds }}
+  periodSeconds: {{ default "8" $liveness.periodSeconds }}
+  failureThreshold: {{ default "1" $liveness.failureThreshold }}
+{{- end -}}
+
+{{- /*
+The kubelet uses readiness probes to know when a container is ready 
+to start accepting traffic. When a Pod is not ready, it is removed
+from Service load balancers.
+*/ -}}
+{{- define "common.healthcheck.readiness" -}}
+{{- $healthCheck := .Values.healthCheck -}}
+{{- $readiness := $healthCheck.readiness -}}
+{{- $config := default (dict) .Values.config -}}
+readinessProbe:
+  httpGet:
+    path: {{ default "" $config.contextPath}}/{{ default "actuator/health/readiness" $readiness.path }}
+    port: {{ default "8080" $readiness.port }}
+  initialDelaySeconds: {{ default "40" $readiness.initialDelaySeconds }}
+  timeoutSeconds: {{ default "2" $readiness.timeoutSeconds }}
+  periodSeconds: {{ default "3" $readiness.periodSeconds }}
+  failureThreshold: {{ default "2" $readiness.failureThreshold }}
+{{- end -}}
+
+{{- /*
+The kubelet uses startup probes to know when a container application has started. 
+If such a probe is configured, it disables liveness and readiness checks until 
+it succeeds, making sure those probes don't interfere with the application startup.
+*/ -}}
+{{- define "common.healthcheck.startup" -}}
+{{- end -}}

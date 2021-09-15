@@ -1,0 +1,22 @@
+apply:
+  stage: deploy
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v1.1.0"
+  environment:
+    name: production
+  script:
+    - gl-ensure-namespace gitlab-managed-apps
+    - gl-helmfile --file $CI_PROJECT_DIR/helmfile.yaml apply --suppress-secrets
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+dev1:
+  stage: deploy
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/cluster-applications:v1.1.0"
+  environment:
+    name: dev1
+    url: https://dev1.by2.projects.company.com/
+  script:
+    - gl-ensure-namespace gitlab-managed-apps
+    - gl-helmfile --file $CI_PROJECT_DIR/dev1/helmfile.yaml apply --suppress-secrets
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

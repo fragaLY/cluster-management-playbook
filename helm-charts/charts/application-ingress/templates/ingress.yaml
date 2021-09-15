@@ -1,0 +1,44 @@
+{{- $fullName := include "applicationIngress.fullname" . -}}
+{{- $appLabels := include "applicationIngress.labels" . -}}
+{{- range .Values.services }}
+{{- $contextPath := .contextPath }}
+{{- $serviceName := .name }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName}}-{{ $serviceName }}
+  labels: {{ $appLabels | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/service-upstream: "true"
+    nginx.ingress.kubernetes.io/upstream-vhost: "{{ $serviceName }}.{{ $.Release.Namespace }}.svc.cluster.local"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    {{- if $.Values.userRewrite }}
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    {{- end }}
+spec:
+  tls:
+    - hosts:
+      {{- range $.Values.hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      {{- if $.Values.explicitTLS }}
+      secretName: {{ $.Values.explicitTLS }}
+      {{- end }}
+  rules:
+  {{- range $.Values.hosts }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+        {{- range $contextPath }}
+          - path: {{ . }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: {{ $.Values.servicePort }}
+        {{- end }}
+  {{- end }}
+{{- end }}

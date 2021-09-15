@@ -1,0 +1,20 @@
+all:
+  vars:
+    ansible_ssh_private_key_file: ../k8s_deployment.pem
+    ansible_user: oracle
+  children:
+    k8s_cluster:
+      children:
+        control_plane:
+          hosts:
+            MACHINE_NAME_1.company.com:
+            MACHINE_NAME_2.company.com:
+            MACHINE_NAME_3.company.com:
+        workers:
+          hosts:
+            MACHINE_NAME_5.company.com:
+            MACHINE_NAME_6.company.com:
+            MACHINE_NAME_7.company.com:
+            MACHINE_NAME_8.company.com:
+              k8s_node_label:
+                - "appname=application_name"

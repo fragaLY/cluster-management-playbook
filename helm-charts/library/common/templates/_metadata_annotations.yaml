@@ -1,0 +1,43 @@
+{{- /*
+common.hook defines a hook.
+
+This is to be used in a 'metadata.annotations' section.
+
+This should be called as 'template "common.metadata.hook" "post-install"'
+
+Any valid hook may be passed in. Separate multiple hooks with a ",".
+*/ -}}
+{{- define "common.hook" -}}
+"helm.sh/hook": {{printf "%s" . | quote}}
+{{- end -}}
+
+{{- define "common.annote" -}}
+{{- range $k, $v := . }}
+{{ $k | quote }}: {{ $v | quote }}
+{{- end -}}
+{{- end -}}
+
+{{- define "common.annotations.deployment" -}}
+{{- $extended := default (dict) .Values.solution -}}
+{{- $lifecycle := default (dict) .Values.lifecycle -}}
+checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | trunc 63}}
+{{- $datadog := default (dict) .Values.datadog -}}
+{{- if $datadog.enabled }}
+ad.datadoghq.com/app.tags: >-
+{{- if not $lifecycle }}
+  {"source": "java"}
+{{- else }}
+{{- if (and ($lifecycle) (eq $lifecycle "spa")) }}
+  {"source": "nginx"}
+{{ else }}
+  {"source": "node"}
+{{- end }}
+{{- end }}
+{{- end -}}
+{{- $prometheus := default (dict) .Values.prometheus -}}
+{{- if $prometheus.enabled }}
+prometheus.io/scrape: "true"
+prometheus.io/path: "{{ $prometheus.path }}"
+prometheus.io/port: "{{ $prometheus.port }}"
+{{- end -}}
+{{- end -}}

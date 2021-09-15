@@ -1,0 +1,10 @@
+---
+fullnameOverride: prjp-service
+
+service:
+  type: NodePort
+  name: "back-end-actuator-port"
+  port: 8081
+
+config:
+  port: 8081

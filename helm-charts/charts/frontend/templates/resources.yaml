@@ -1,0 +1,10 @@
+{{- define "common.resources" -}}
+{{- $resources := .Values.resources -}}
+resources:
+  requests:
+    memory: {{ .Values.resources.requests.memory | quote }}
+    cpu: {{ .Values.resources.requests.cpu | quote }}
+  limits:
+    memory: {{ .Values.resources.limits.memory | quote }}
+    cpu: {{ .Values.resources.limits.cpu | quote }}
+{{- end -}}

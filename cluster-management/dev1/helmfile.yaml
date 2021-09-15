@@ -1,0 +1,51 @@
+repositories:
+  - name: {root_project_name}
+    url: https://artifactory.company.com/artifactory/project-helm-virtual/
+    username: {{ requiredEnv "HELM_USERNAME" | quote }}
+    password: {{ requiredEnv "HELM_PASSWORD" | quote }}
+
+releases:
+  - name: application-ingress
+    namespace: {{ requiredEnv "KUBE_NAMESPACE" }}
+    chart: { root_project_name }/application-ingress
+    version: 1.0.1
+    installed: true
+    values:
+      - application-ingress.yaml
+
+  - name: backend-1
+    namespace: {{ requiredEnv "KUBE_NAMESPACE" }}
+    chart: {root_project_name}/backend-1
+    version: 1.0.1
+    installed: true
+    values:
+      - backend-1.yaml
+
+  - name: front-end
+    namespace: {{ requiredEnv "KUBE_NAMESPACE" }}
+    chart: {root_project_name}/frontend
+    version: 1.0.1
+    installed: true
+    values:
+      - front-end.yaml
+
+  - name: backend-2
+    namespace: {{ requiredEnv "KUBE_NAMESPACE" }}
+    chart: { root_project_name }/backend-2
+    version: 1.0.1
+    installed: true
+    values:
+      - backend-2.yaml
+
+  - name: back-end-1-actuator
+    namespace: {{ requiredEnv "KUBE_NAMESPACE" }}
+    chart: { root_project_name }/backend-1
+    version: 1.0.1
+    installed: true
+
+  - name: back-end-2-actuator
+    namespace: { { requiredEnv "KUBE_NAMESPACE" } }
+    chart: { root_project_name }/backend-2
+    version: 1.0.1
+    installed: true
+

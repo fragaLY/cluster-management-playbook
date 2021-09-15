@@ -1,0 +1,33 @@
+---
+fullnameOverride: prjp-service
+
+image:
+  name: prjp-service
+  tag: 1.0.1-rc.5
+
+application:
+  datasource:
+    url: jdbc:postgresql://IP:5432/hapi-fhir
+    username: postgres
+    password: pwd
+  kafka:
+    bootstrapServers: kafka1
+
+prometheus:
+  enabled: true
+  path: /actuator/prometheus
+  port: "8081"
+
+healthCheck:
+  readiness:
+    port: 8081
+  liveness:
+    port: 8081
+
+resources:
+  requests:
+    memory: 1024Mi
+    cpu: 500m
+  limits:
+    memory: 2048Mi
+    cpu: 500m

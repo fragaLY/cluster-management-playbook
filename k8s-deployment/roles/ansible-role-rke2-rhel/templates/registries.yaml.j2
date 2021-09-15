@@ -1,0 +1,9 @@
+mirrors:
+  docker.io:
+    endpoint:
+      - "https://{{ rke2_custom_host }}"
+configs:
+  "{{ rke2_custom_host }}":
+    auth:
+      username: {{ rke2_custom_login }}
+      password: {{ rke2_custom_passoword }}

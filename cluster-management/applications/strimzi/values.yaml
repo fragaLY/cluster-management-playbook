@@ -1,0 +1,2 @@
+operationTimeoutMs: 400000
+connectBuildTimeoutMs: 500000

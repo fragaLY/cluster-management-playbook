@@ -1,0 +1,21 @@
+{{- define "common.service.tpl" -}}
+{{- $service := default (dict) .Values.service -}}
+{{- $config := default (dict) .Values.config -}}
+apiVersion: v1
+kind: Service
+{{ template "common.metadata" . }}
+spec:
+  type: {{ default "ClusterIP" $service.type }}
+  ports:
+  - name: {{ default "http" $service.name }}
+    port: {{ default "80" $service.port }}
+    protocol: {{ default "TCP" $service.protocol }}
+    targetPort: {{ default "8080" $config.port }}
+    # enable this for istio 1.6
+    # https://istio.io/latest/docs/ops/configuration/traffic-management/protocol-selection/
+    # appProtocol: {{ default "http" $service.protocol }}
+  selector: {{- include "common.labels.selector" . | indent 4 -}}
+{{- end -}}
+{{- define "common.service" -}}
+{{- template "common.util.merge" (append . "common.service.tpl") -}}
+{{- end -}}

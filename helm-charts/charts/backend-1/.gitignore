@@ -1,0 +1,5 @@
+.*
+!.helmignore
+!.gitignore
+Chart.lock
+charts/**

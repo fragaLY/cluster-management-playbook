@@ -1,0 +1,49 @@
+---
+stages:
+  - test-library
+  - library
+  - test
+  - deploy
+
+image: artifactory.company.com:6262/k8s-deploytools:latest
+variables:
+  HELM_URL: ${K8S_SECRET_HELM_URL}
+  HELM_REPO_USERNAME: ${K8S_SECRET_ARTIFACTORY_LOGIN}
+  HELM_REPO_PASSWORD: ${K8S_SECRET_ARTIFACTORY_PASSWORD}
+
+default:
+  before_script:
+    - scripts/helm-auth.sh
+
+test:common:
+  stage: test-library
+  dependencies: []
+  only:
+    changes:
+      - charts/**/*
+      - charts/**/**/*
+  script:
+    - scripts/helm-test.sh
+  variables:
+    HELM_CHART: charts/demo-common-lib
+
+deploy:common:
+  stage: library
+  dependencies:
+    - test:common
+  only:
+    changes:
+      - charts/**/*
+      - charts/**/**/*
+      - library/common/*
+      - library/common/**/*
+  script:
+    - scripts/helm-build-upload.sh
+  variables:
+    HELM_CHART: library/common
+
+include:
+  - local: .gitlab/services/application-ingress-ci.yml
+  - local: .gitlab/services/frontend-ci.yml
+  - local: .gitlab/services/backend-1-ci.yml
+  - local: .gitlab/services/backend-2-ci.yml

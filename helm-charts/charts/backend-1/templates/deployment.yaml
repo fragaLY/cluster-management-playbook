@@ -1,0 +1,4 @@
+---
+{{- template "common.deployment" (list . "application.deployment") -}}
+{{- define "application.deployment" -}}
+{{- end -}}

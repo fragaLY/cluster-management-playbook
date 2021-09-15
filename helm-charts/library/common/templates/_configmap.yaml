@@ -1,0 +1,26 @@
+{{- define "common.configmap.tpl" -}}
+apiVersion: v1
+kind: ConfigMap
+{{ template "common.metadata" . }}
+data: {}
+{{- end -}}
+{{- define "common.configmap" -}}
+{{- template "common.util.merge" (append . "common.configmap.tpl") -}}
+{{- end -}}
+
+{{- define "common.configmap.spring.tpl" -}}
+{{- $config := default (dict) .Values.config -}}
+apiVersion: v1
+kind: ConfigMap
+{{ template "common.metadata" . }}
+data:
+  SPRING_APPLICATION_NAME: {{ template "common.fullname" . }}
+  SERVER_PORT: {{ default "8080" $config.port | quote}}
+  SPRING_PROFILES_ACTIVE: {{ default "qa" $config.springProfilesActive }}
+  SPRING_MAIN_ALLOW-BEAN-DEFINITION-OVERRIDING: {{ default "true" $config.springAllowBeanOverriding | quote}}
+  SERVER_SERVLET_CONTEXT-PATH: {{ default "/" $config.contextPath }}
+  MANAGEMENT_METRICS_TAGS_APPLICATION: {{ template "common.fullname" . }}
+{{- end -}}
+{{- define "common.configmap.spring" -}}
+{{- template "common.util.merge" (append . "common.configmap.spring.tpl") -}}
+{{- end -}}

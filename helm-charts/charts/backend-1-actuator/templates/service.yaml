@@ -1,0 +1,14 @@
+---
+{{- template "common.service" (list . "application.service") -}}
+{{- define "application.service" -}}
+metadata:
+  name: back-end-actuator
+spec:
+  ports:
+  - nodePort: 31016
+    port: 8081
+    targetPort: 8081
+  selector:
+    app.kubernetes.io/instance: back-end
+    app.kubernetes.io/name: backend-1-service
+{{- end -}}

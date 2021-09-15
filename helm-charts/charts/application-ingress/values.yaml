@@ -1,0 +1,32 @@
+## String to partially override commerceCatalog.fullname template (will maintain the release name)
+##
+# nameOverride: ""
+
+## String to fully override commerceCatalog.fullname template
+##
+fullnameOverride: application-ingress
+
+solution:
+  component: ingress
+
+servicePort: 80
+
+hosts:
+  - "service0.by2.cmpn-.projects.company.com"
+
+explicitTLS:
+userRewrite: false
+
+services:
+  - name: service
+    contextPath:
+      - /
+# use rewrites
+# userRewrite: true
+# services:
+#   - name: frontend
+#     contextPath:
+#       - ()(/.*)
+#   - name: api
+#     contextPath:
+#       - (/api)(/.*)

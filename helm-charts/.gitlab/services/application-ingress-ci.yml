@@ -1,0 +1,29 @@
+test:application-ingress:
+  stage: test
+  needs:
+    - deploy:common
+  only:
+    changes:
+      - charts/application-ingress/*
+      - charts/application-ingress/**/*
+  script:
+    - scripts/helm-test.sh
+  variables:
+    HELM_CHART: charts/application-ingress
+
+deploy:application-ingress:
+  stage: deploy
+  needs:
+    - test:application-ingress
+  only:
+    refs:
+      - master
+    changes:
+      - library/common/*
+      - library/common/**/*
+      - charts/application-ingress/*
+      - charts/application-ingress/**/*
+  script:
+    - scripts/helm-build-upload.sh
+  variables:
+    HELM_CHART: charts/application-ingress

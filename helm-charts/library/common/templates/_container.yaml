@@ -1,0 +1,41 @@
+{{- define "common.container.tpl" -}}
+{{- $config := default (dict) .Values.config -}}
+{{- $lifecycle := default (dict) .Values.lifecycle -}}
+{{- $datadog := default (dict) .Values.datadog -}}
+name: app
+image: "{{ default "artifactory.company.com:6262" .Values.image.registry }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+imagePullPolicy: {{ default "IfNotPresent" .Values.image.pullPolicy }}
+ports:
+- name: {{ default "http" $config.applicationName }}
+  containerPort: {{ default "8080" $config.port }}
+  protocol: TCP
+{{- if $lifecycle }}
+{{- if eq $lifecycle "spa" }}
+lifecycle:
+  preStop:
+    exec:
+      command:
+      - /usr/sbin/nginx
+      - -s
+      - quit
+{{- end }}
+{{- end }}
+{{- if $datadog }}
+env:
+{{ include "common.datadog" . | indent 2 }}
+{{- end }}
+envFrom:
+  - configMapRef:
+      name: {{ template "common.fullname" . }}
+  {{ include "common.envvar.shared.configs" . | indent 2 }}
+  {{ include "common.envvar.shared.secrets" . | indent 2 }}
+{{ include "common.healthcheck.liveness" . }}
+{{ include "common.healthcheck.readiness" . }}
+{{ include "common.healthcheck.startup" . }}
+{{ include "common.resources" . }}
+{{- end -}}
+{{- define "common.container" -}}
+{{- /* clear new line so indentation works correctly */ -}}
+{{- println "" -}}
+{{- include "common.util.merge" (append . "common.container.tpl") | indent 8 -}}
+{{- end -}}

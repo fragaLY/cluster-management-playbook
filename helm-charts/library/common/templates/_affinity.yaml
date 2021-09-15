@@ -1,0 +1,24 @@
+{{- define "common.affinity"}}
+{{- $labels := default (tuple "kubernetes.io/hostname" "failure-domain.beta.kubernetes.io/zone") .Values.antiAffinityLabels -}}
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    {{- range $labels }}
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - {{ template "common.name" $ }}
+            - key: app.kubernetes.io/instance
+              operator: In
+              values:
+                - {{ template "common.fullname" $ }}
+        topologyKey: {{ . }}
+    {{- end }}
+  {{- if .Values.affinity -}}
+  {{- .Values.affinity | toYaml | trim | nindent 2 }}
+  {{- end -}}
+{{- end -}}

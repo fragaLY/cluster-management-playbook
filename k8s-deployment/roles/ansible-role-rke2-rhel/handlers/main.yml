@@ -1,0 +1,17 @@
+- name: restart RKE2 server
+  ansible.builtin.systemd:
+    name: rke2-server.service
+    state: restarted
+    daemon_reload: true
+    enabled: true
+  listen: "restart rke2"
+  when: "'control_plane' in group_names"
+
+- name: restart RKE2 agent
+  ansible.builtin.systemd:
+    name: rke2-agent.service
+    state: restarted
+    daemon_reload: true
+    enabled: true
+  listen: "restart rke2"
+  when: "'workers' in group_names"

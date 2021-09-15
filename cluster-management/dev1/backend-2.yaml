@@ -1,0 +1,30 @@
+fullnameOverride: backend-2
+image:
+  name: backend-2
+  tag: 1.1.0-rc.1
+  pullPolicy: IfNotPresent
+replicas: 1
+healthCheck:
+  readiness:
+    port: "8081"
+  liveness:
+    port: "8081"
+application:
+  datasource:
+    url: jdbc:postgresql://MACHINE_NAME.company.com:5432/backend-2
+    username: postgres
+    password: password
+  kafka:
+    bootstrapServers: kafka-cluster-kafka-brokers.strimzi.svc.cluster.local:9092
+
+resourceLimits:
+  requests:
+    memory: 512Mi
+    cpu: 500m
+  limits:
+    memory: 1024Mi
+    cpu: 2000m
+prometheus:
+  enabled: true
+  path: /actuator/prometheus
+  port: "8081"

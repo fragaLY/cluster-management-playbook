@@ -1,0 +1,27 @@
+---
+- name: configure RKE2
+  include_tasks: rke2-config.yml
+
+- name: start RKE2 service
+  ansible.builtin.systemd:
+    name: "rke2-server.service"
+    state: started
+    enabled: true
+
+- name: wait for rke2-server be ready
+  shell: |
+    set -o pipefail
+    /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes | grep "{{ inventory_hostname }}"
+  args:
+    executable: /bin/bash
+  changed_when: false
+  register: first_server
+  until:
+    - '" Ready "  in first_server.stdout'
+  retries: 40
+  delay: 15
+
+- name: set active server variable
+  ansible.builtin.set_fact:
+    active_server: "{{ inventory_hostname }}"
+  run_once: yes

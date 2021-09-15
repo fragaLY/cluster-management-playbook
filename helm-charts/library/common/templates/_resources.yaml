@@ -1,0 +1,10 @@
+{{- define "common.resources" -}}
+{{- $resources := .Values.resources -}}
+resources:
+  requests:
+    memory: {{ default "640Mi" $resources.requests.memory }}
+    cpu: {{ default "100m" $resources.requests.cpu }}
+  limits:
+    memory: {{ default "2048Mi" $resources.limits.memory }}
+    cpu: {{ default "1000m" $resources.limits.cpu }}
+{{- end -}}

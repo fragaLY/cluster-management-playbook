@@ -1,0 +1,13 @@
+apiVersion: v2
+name: prjp-application-ingress
+version: 2.0.0
+description: A Helm chart for Ingress
+type: application
+home: https://kb.company.com
+sources:
+  - https://git.company.com/cmpn/prj-platform/helm-charts
+maintainers:
+  - name: company DevOps team
+    email: Projectcmpn-@company.com
+icon: file://icon.png
+appVersion: "3.0.0"

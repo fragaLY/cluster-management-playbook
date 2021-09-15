@@ -1,0 +1,15 @@
+hosts:
+  - dev1.by2.projects.company.com
+
+userRewrite: true
+
+services:
+  - name: front-end
+    contextPath:
+      - /()(.*)
+  - name: backend-1
+    contextPath:
+      - /api/backend-1(/|$)(.*)
+  - name: backend-2
+    contextPath:
+      - /api/backend-2(/|$)(.*)

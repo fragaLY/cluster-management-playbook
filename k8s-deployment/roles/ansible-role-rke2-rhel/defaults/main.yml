@@ -1,0 +1,35 @@
+---
+# Kubernetes API and registration RKE2 IP address. The default Address is the IPv4 of the Server/Master node.
+rke2_api_ip: "{{ hostvars[groups.control_plane.0]['ansible_default_ipv4']['address'] }}"
+
+# API Server destination port
+rke2_apiserver_dest_port: 6443
+
+# If false, server node(s) will be schedulable and thus your workloads can get launched on them
+rke2_server_taint: false
+
+# Pre-shared secret token that other server or agent nodes will register with when connecting to the cluster
+rke2_token: Some13r-K@!(-JW!)M(Secret
+
+# RKE2 version
+rke2_version: 1.21
+
+# Download Kubernetes config file to the Ansible controller
+rke2_download_kubeconf: false
+
+# Do not deploy packaged components and delete any deployed components
+# Valid items: rke2-canal, rke2-coredns, rke2-ingress-nginx, rke2-kube-proxy, rke2-metrics-server
+rke2_disable:
+
+# Path to custom manifests deployed during the RKE2 installation
+rke2_custom_manifests:
+
+# Deploy RKE2 and set the custom containerd images registries
+rke2_custom_registry: false
+
+# (Optional) A list of Kubernetes API server flags
+# All flags can be found here https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver
+#rke2_kube_apiserver_args: []
+
+# Override default containerd snapshotter
+rke2_snapshooter: overlayfs
